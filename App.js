@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import firebase from 'firebase'
+import { Container } from 'native-base'
 import { config } from './firebaseConfig'
+import LoginScreen from './src/screens/LoginScreen'
 
 firebase.initializeApp(config)
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n Shake or press menu button for dev menu',
-})
+// const instructions = Platform.select({
+//   ios: 'Press Cmd+R to reload,\n Cmd+D or shake for dev menu',
+//   android: 'Double tap R on your keyboard to reload,\n Shake or press menu button for dev menu',
+// })
 
 const styles = StyleSheet.create({
   container: {
@@ -33,12 +35,20 @@ const styles = StyleSheet.create({
 export default class App extends Component {
   componentDidMount() {}
 
+  isUserLoggedIn = () => {
+    if (firebase.auth().currentUser) {
+      return true
+    }
+    return false
+  }
+
   render() {
+    if (this.isUserLoggedIn) {
+      return <Container>{!this.isUserLoggedIn() && <LoginScreen />}</Container>
+    }
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+      <View>
+        <Text>Welcome</Text>
       </View>
     )
   }
