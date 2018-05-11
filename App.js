@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import firebase from 'firebase'
-import { Container } from 'native-base'
+import { Container, Header, Body, Title } from 'native-base'
 import { config } from './firebaseConfig'
 import LoginScreen from './src/screens/LoginScreen'
+import HomeScreen from './src/screens/HomeScreen'
 
 firebase.initializeApp(config)
 
@@ -33,23 +34,31 @@ const styles = StyleSheet.create({
 
 // type Props = {};
 export default class App extends Component {
-  componentDidMount() {}
-
-  isUserLoggedIn = () => {
-    if (firebase.auth().currentUser) {
-      return true
-    }
-    return false
+  state = {
+    user: false,
+  }
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.setState({ user: true })
+      } else {
+        this.setState({ user: false })
+      }
+    })
   }
 
   render() {
-    if (this.isUserLoggedIn) {
-      return <Container>{!this.isUserLoggedIn() && <LoginScreen />}</Container>
+    if (this.state.user) {
+      return (
+        <Container>
+          <HomeScreen />
+        </Container>
+      )
     }
     return (
-      <View>
-        <Text>Welcome</Text>
-      </View>
+      <Container>
+        <LoginScreen />
+      </Container>
     )
   }
 }
